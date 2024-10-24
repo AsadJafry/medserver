@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm'; 
 import * as bcrypt from 'bcryptjs';
@@ -22,8 +22,19 @@ export class UsersService {
     newUser.isPremium = false;
     newUser.hasGuideAccess = false;
     newUser.hasBookedInterview = false;
-
-    return this.usersRepository.save(newUser);
+    try {
+      
+      return await this.usersRepository.save(newUser);
+    } catch (error) {
+      if (error.code === '23505') {
+        // Conflict: Duplicate Record
+        
+        throw new ConflictException('email already exists.');
+      } else {
+        // this.logger.debug(error);
+        throw new InternalServerErrorException();
+      }
+    }
   }
 
   // Find user by username (typically used for login validation)

@@ -4,21 +4,14 @@ import { PaymentsModule } from './payments/payments.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CodesModule } from './codes/codes.module';
 import { AuthModule } from './auth/auth.module';
+import { BookingsModule } from './bookings/bookings.module';
+import { typeOrmConfig } from './config/typeorm-config';
 
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'admin',
-      password: '12345678',
-      database: 'med',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true, // Automatically syncs your schema (use only in dev)
-    }),
-    UsersModule, PaymentsModule, CodesModule,AuthModule],
+    TypeOrmModule.forRoot(typeOrmConfig),
+    UsersModule, PaymentsModule, CodesModule,AuthModule, BookingsModule],
   controllers: [],
   providers: [],
 })
